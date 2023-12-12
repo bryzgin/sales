@@ -34,3 +34,34 @@ inner join sales on employees.employee_id = sales.sales_person_id
 inner join products on sales.product_id  = products.product_id
 group by concat(employees.first_name, ' ', employees.last_name), to_char(sales.sale_date, 'Day')
 order by to_char(sales.sale_date, 'Day');
+
+-- Данный запрос формирует отчет по возрастным группам
+-- Я использовал условную конструкцию CASE для группировки
+select
+case 
+	when customers.age between 16 and 25 then '16-25'
+	when customers.age between 25 and 40 then '26-40'
+	else '40+'
+end as age_category, count(*) as count 
+from customers
+group by age_category
+order by age_category;
+
+-- Данный запрос формирует отчет о количестве уникальных покупателей и выручке
+-- Для вывода даты в требуемом формате я использовал функцию TO_CHAR и шаблон формата 'YYYY-MM'
+select to_char(sales.sale_date, 'YYYY-MM') as date, count(customer_id) as total_customers, round(sum(sales.quantity * products.price)) as income
+from sales
+inner join products on sales.product_id = products.product_id
+group by to_char(sales.sale_date, 'YYYY-MM')
+order by to_char(sales.sale_date, 'YYYY-MM');
+
+-- Данный запрос формирует отчет о покупателях, первая покупка которых была в ходе проведения акций
+select concat(customers.first_name, ' ', customers.last_name) as customer, 
+min(sales.sale_date) as sale_date, 
+concat(employees.first_name, ' ', employees.last_name) as seller
+from customers
+inner join sales on customers.customer_id = sales.customer_id 
+inner join employees on sales.sales_person_id = employees.employee_id
+inner join products on sales.product_id = products.product_id
+group by concat(customers.first_name, ' ', customers.last_name), concat(employees.first_name, ' ', employees.last_name)
+having sum(products.price) = 0;
