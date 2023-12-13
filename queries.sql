@@ -10,7 +10,8 @@ from employees
 inner join sales on employees.employee_id = sales.sales_person_id
 inner join products on sales.product_id  = products.product_id
 group by concat(employees.first_name, ' ', employees.last_name)
-order by operations desc;
+order by operations desc
+limit 10;
 
 -- Вспомогательный расчет средней выручки за сделку по всем продавцам
 select round(avg(sales.quantity * products.price)) as average_income
