@@ -34,7 +34,7 @@ order by average_income;
 -- Запрос, который формирует отчет о выручке по дням недели, файл day_of_the_week_income.csv
 select 
 	concat(employees.first_name, ' ', employees.last_name) as name, 
-	to_char(sales.sale_date, 'Day') as weekday, 
+	to_char(sales.sale_date, 'day') as weekday, 
 	round(sum(sales.quantity * products.price)) as income
 from employees
 inner join sales on 
@@ -44,7 +44,7 @@ inner join products on
 group by 
 	concat(employees.first_name, ' ', employees.last_name), 
 	to_char(sales.sale_date, 'id'),
-	to_char(sales.sale_date, 'Day')
+	to_char(sales.sale_date, 'day')
 order by to_char(sales.sale_date, 'id');
 
 
