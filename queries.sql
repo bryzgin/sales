@@ -8,7 +8,7 @@ select count(distinct(customers.customer_id)) as customers_count from customers;
 select
 	concat(employees.first_name, ' ', employees.last_name) as name,
 	count(distinct(sales.sales_id)) as operations,
-	round(sum(sales.quantity * products.price)) as income
+	floor(sum(sales.quantity * products.price)) as income
 from employees
 inner join sales on
 	employees.employee_id = sales.sales_person_id
@@ -21,21 +21,21 @@ limit 10;
 -- Запрос, который формирует отчет о продавцах, чья средняя выручка за сделку меньше средней выручки за сделку по всем продавцам, файл lowest_average_income.csv
 select
 	concat(employees.first_name, ' ', employees.last_name) as name,
-	round(avg(sales.quantity * products.price)) as average_income
+	floor(avg(sales.quantity * products.price)) as average_income
 from employees
 inner join sales on
 	employees.employee_id = sales.sales_person_id
 inner join products on
 	sales.product_id = products.product_id
 group by concat(employees.first_name, ' ', employees.last_name)
-having round(avg(sales.quantity * products.price)) < (select avg(sales.quantity * products.price) from sales inner join products on sales.product_id = products.product_id) 
+having floor(avg(sales.quantity * products.price)) < (select avg(sales.quantity * products.price) from sales inner join products on sales.product_id = products.product_id) 
 order by average_income;
 
 -- Запрос, который формирует отчет о выручке по дням недели, файл day_of_the_week_income.csv
 select 
 	concat(employees.first_name, ' ', employees.last_name) as name, 
 	to_char(sales.sale_date, 'day') as weekday, 
-	round(sum(sales.quantity * products.price)) as income
+	floor(sum(sales.quantity * products.price)) as income
 from employees
 inner join sales on 
 	employees.employee_id = sales.sales_person_id
@@ -65,7 +65,7 @@ order by age_category;
 select 
 	to_char(sales.sale_date, 'YYYY-MM') as date, 
 	count(distinct(customer_id)) as total_customers, 
-	round(sum(sales.quantity * products.price)) as income
+	floor(sum(sales.quantity * products.price)) as income
 from sales
 inner join products on 
 	sales.product_id = products.product_id
