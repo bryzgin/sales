@@ -74,8 +74,9 @@ order by to_char(sales.sale_date, 'YYYY-MM');
 
 -- Запрос, который формирует отчет о покупателях, первая покупка которых была в ходе проведения акций, файл special_offer.csv
 select 
-	concat(customers.first_name, ' ', customers.last_name) as customer, 
-	min(sales.sale_date) as sale_date, 
+	distinct on (customers.customer_id)
+	concat(customers.first_name, ' ', customers.last_name) as customer,
+	min(sales.sale_date) as sale_date,
 	concat(employees.first_name, ' ', employees.last_name) as seller
 from customers
 inner join sales on 
